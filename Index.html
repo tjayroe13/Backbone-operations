@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Backbone Operations | Virtual Admin & Ops Support</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --white:#ffffff;
+  --snow:#fafaf8;
+  --light:#f4f2ef;
+  --rose:#b08888;
+  --rose-pale:#f0e8e8;
+  --sage-pale:#edf1ee;
+  --black:#1a1a1a;
+  --dark:#2d2d2d;
+  --muted:#888480;
+  --rule:#e8e4df;
+}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--black);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:rgba(255,255,255,0.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;letter-spacing:0.04em;color:var(--black);text-decoration:none}
+.logo span{color:var(--rose)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.76rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--black)}
+.btn-nav{background:var(--black)!important;color:#fff!important;padding:0.55rem 1.35rem!important;font-size:0.72rem!important;letter-spacing:0.12em!important;transition:background 0.2s!important}
+.btn-nav:hover{background:var(--dark)!important}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:4.5rem}
+.hero-left{background:var(--snow);padding:6rem 4rem 5rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hero-left::before{content:'';position:absolute;top:-100px;left:-100px;width:350px;height:350px;border-radius:50%;background:var(--rose-pale);opacity:0.45;pointer-events:none}
+.hero-left::after{content:'';position:absolute;bottom:-80px;right:-80px;width:250px;height:250px;border-radius:50%;background:var(--sage-pale);opacity:0.5;pointer-events:none}
+.eyebrow{font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1.25rem;position:relative}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,5vw,4.2rem);font-weight:300;line-height:1.08;letter-spacing:-0.01em;margin-bottom:1.5rem;position:relative}
+h1 em{font-style:italic;color:var(--rose)}
+.hero-sub{font-size:0.92rem;color:var(--muted);max-width:420px;margin-bottom:2.5rem;line-height:1.85;position:relative}
+.cta-row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:3rem;position:relative}
+.btn{background:var(--black);color:#fff;padding:0.9rem 2rem;font-family:'Jost',sans-serif;font-size:0.74rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s,transform 0.15s}
+.btn:hover{background:var(--dark);transform:translateY(-1px)}
+.btn-ghost{color:var(--black);font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+.btn-ghost:hover{color:var(--rose);border-color:var(--rose)}
+.trust-row{display:flex;gap:2rem;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:1.75rem;position:relative}
+.trust-num{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;line-height:1}
+.trust-label{font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:0.15rem}
+
+.hero-right{background:var(--white);border-left:1px solid var(--rule);padding:6rem 3.5rem 5rem 4rem;display:flex;flex-direction:column;justify-content:center}
+.hero-right-label{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:1.75rem;line-height:1.35}
+.svc-list{display:flex;flex-direction:column}
+.svc-row{display:flex;align-items:center;justify-content:space-between;padding:0.95rem 0;border-bottom:1px solid var(--rule);font-size:0.88rem;color:var(--dark);transition:color 0.2s;cursor:default}
+.svc-row:first-of-type{border-top:1px solid var(--rule)}
+.svc-row:hover{color:var(--rose)}
+.svc-row:hover .arr{opacity:1;transform:translateX(3px)}
+.arr{font-size:0.75rem;color:var(--rose);opacity:0;transition:opacity 0.2s,transform 0.2s}
+
+/* ABOUT */
+.about{background:var(--black);color:#fff;padding:3.5rem 4rem;display:grid;grid-template-columns:1fr 1px 1fr;gap:3.5rem;align-items:center}
+.about-divider{background:#2a2a2a}
+.about-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--rose);margin-bottom:0.75rem}
+.about-headline{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;line-height:1.5;color:#e8e4df}
+.about-headline em{font-style:italic;color:var(--rose)}
+.about-body{font-size:0.86rem;color:#777;line-height:1.85}
+.about-body strong{color:#bbb;font-weight:400}
+
+/* SERVICES */
+#services{background:var(--snow);padding:5rem 4rem}
+.sec-inner{max-width:1100px;margin:0 auto}
+.sec-top{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:end;margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid var(--rule)}
+.sec-label{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:0.6rem}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,3vw,2.6rem);font-weight:300;line-height:1.12;letter-spacing:-0.01em}
+h2 em{font-style:italic;color:var(--rose)}
+.sec-desc{font-size:0.88rem;color:var(--muted);line-height:1.85}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.svc-card{background:var(--white);padding:1.75rem 1.5rem;transition:background 0.25s;cursor:default}
+.svc-card:hover{background:var(--black)}
+.svc-card:hover .svc-title{color:#fff}
+.svc-card:hover .svc-desc{color:#666}
+.svc-ico{font-size:1.4rem;margin-bottom:0.85rem}
+.svc-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;margin-bottom:0.4rem;transition:color 0.25s}
+.svc-desc{font-size:0.8rem;color:var(--muted);line-height:1.65;transition:color 0.25s}
+
+/* WHO */
+#who{background:var(--white);padding:5rem 4rem}
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem}
+.who-card{padding:1.5rem 1.25rem;border:1px solid var(--rule);transition:background 0.2s,border-color 0.2s;cursor:default}
+.who-card:hover{background:var(--rose-pale);border-color:var(--rose)}
+.who-icon{font-size:1.3rem;margin-bottom:0.6rem}
+.who-name{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
+.who-detail{font-size:0.76rem;color:var(--muted);line-height:1.5}
+
+/* PRICING */
+#pricing{background:var(--light);padding:5rem 4rem}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.plan{padding:2.25rem 1.75rem;border:1px solid var(--rule);position:relative;transition:border-color 0.25s,transform 0.2s;background:var(--white)}
+.plan:hover{border-color:var(--rose);transform:translateY(-3px)}
+.plan.featured{background:var(--black);color:#fff;border-color:var(--black)}
+.plan.featured .p-desc{color:#666}
+.plan.featured .p-price{color:var(--rose)}
+.plan.featured li{color:#999}
+.plan.featured li::before{color:var(--rose)}
+.p-tag{position:absolute;top:-1px;left:1.75rem;background:var(--rose);color:#fff;font-size:0.58rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;padding:0.2rem 0.7rem}
+.p-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:0.4rem}
+.p-price{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;color:var(--black);line-height:1;margin-bottom:0.2rem}
+.p-price sup{font-size:1.1rem;vertical-align:super}
+.p-price span{font-family:'Jost',sans-serif;font-size:0.82rem;color:var(--muted);font-weight:300}
+.p-desc{font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--rule);line-height:1.6}
+.p-list{list-style:none;display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1.75rem}
+.p-list li{font-size:0.8rem;color:var(--muted);display:flex;align-items:flex-start;gap:0.45rem;line-height:1.4}
+.p-list li::before{content:'✓';color:var(--rose);flex-shrink:0;font-weight:500}
+.plan .btn{width:100%;text-align:center;font-size:0.7rem;padding:0.75rem}
+.plan-light .btn{background:transparent;color:var(--black);border:1px solid var(--rule)}
+.plan-light .btn:hover{background:var(--black);color:#fff;border-color:var(--black)}
+
+/* OFFER */
+#offer{background:var(--snow);padding:5rem 4rem}
+.offer-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;align-items:center}
+.offer-desc{font-size:0.9rem;color:var(--muted);line-height:1.85;margin:1.1rem 0 1.35rem}
+.offer-list{list-style:none;display:flex;flex-direction:column;gap:0.65rem}
+.offer-list li{font-size:0.83rem;color:var(--dark);display:flex;align-items:flex-start;gap:0.5rem;line-height:1.4}
+.offer-list li::before{content:'✓';color:var(--rose);flex-shrink:0;font-weight:500}
+.offer-card{background:var(--black);color:#fff;padding:2.75rem 2.25rem;text-align:center;position:relative}
+.offer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--rose),#c9a4a4)}
+.badge-label{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--rose);margin-bottom:0.85rem}
+.badge-main{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;line-height:1}
+.badge-sub{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--rose);margin-top:0.2rem}
+.badge-note{font-size:0.66rem;color:#444;letter-spacing:0.1em;text-transform:uppercase;margin-top:0.9rem}
+.offer-note{background:var(--white);border:1px solid var(--rule);padding:1.1rem 1.35rem;display:flex;gap:0.65rem;align-items:flex-start;margin-top:1rem}
+.offer-note-ico{color:var(--rose);flex-shrink:0;font-size:0.75rem;margin-top:2px}
+.offer-note p{font-size:0.79rem;color:var(--muted);line-height:1.65}
+
+/* CONTACT */
+#contact{background:var(--white);padding:6rem 4rem;text-align:center;position:relative;overflow:hidden}
+#contact::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:500px;height:500px;border-radius:50%;background:var(--rose-pale);opacity:0.35;pointer-events:none}
+#contact::after{content:'';position:absolute;bottom:-100px;right:8%;width:300px;height:300px;border-radius:50%;background:var(--sage-pale);opacity:0.45;pointer-events:none}
+.contact-inner{position:relative;z-index:1}
+#contact .sec-label{margin-bottom:0.75rem}
+#contact h2{font-size:clamp(2rem,4vw,3rem);margin-bottom:1rem}
+#contact p{color:var(--muted);font-size:0.92rem;max-width:440px;margin:0 auto 2.25rem;line-height:1.85}
+.contact-links{display:flex;gap:0.85rem;justify-content:center;flex-wrap:wrap;margin-top:1.35rem}
+.c-link{display:flex;align-items:center;gap:0.45rem;color:var(--muted);font-size:0.78rem;text-decoration:none;border:1px solid var(--rule);padding:0.65rem 1.1rem;transition:border-color 0.2s,color 0.2s}
+.c-link:hover{border-color:var(--rose);color:var(--rose)}
+
+/* FOOTER */
+footer{background:var(--black);padding:1.35rem 4rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #222}
+.f-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:#444;letter-spacing:0.04em}
+.f-logo span{color:var(--rose)}
+.f-copy{font-size:0.68rem;color:#333}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero-left>*{animation:fadeUp 0.75s ease both}
+.eyebrow{animation-delay:0.1s}
+h1{animation-delay:0.22s}
+.hero-sub{animation-delay:0.34s}
+.cta-row{animation-delay:0.44s}
+.trust-row{animation-delay:0.54s}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{gap:1rem}
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .hero-left{padding:5.5rem 1.5rem 4rem}
+  .about{grid-template-columns:1fr;gap:1.75rem;padding:3rem 1.5rem}
+  .about-divider{display:none}
+  #services,#who,#pricing,#offer,#contact{padding:4rem 1.5rem}
+  .sec-top{grid-template-columns:1fr;gap:1.25rem}
+  .svc-grid{grid-template-columns:1fr 1fr}
+  .who-grid{grid-template-columns:1fr 1fr}
+  .price-grid{grid-template-columns:1fr}
+  .offer-wrap{grid-template-columns:1fr;gap:2.5rem}
+  footer{flex-direction:column;gap:0.4rem;text-align:center;padding:1.25rem}
+}
+@media(max-width:540px){
+  .svc-grid{grid-template-columns:1fr}
+  .who-grid{grid-template-columns:1fr 1fr}
+  h1{font-size:2.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Backbone <span>Operations</span></a>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#who">Who I Serve</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact" class="btn-nav">Book a Call</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">Virtual Admin &amp; Operations Support</div>
+    <h1>Your business,<br><em>finally</em><br>organized.</h1>
+    <p class="hero-sub">You built your business to do the work — not to drown in emails, chase invoices, and manage scheduling chaos. I handle your back office so you can stay focused on what you do best.</p>
+    <div class="cta-row">
+      <a href="#contact" class="btn">Book a Free Consultation</a>
+      <a href="#services" class="btn-ghost">See What I Handle →</a>
+    </div>
+    <div class="trust-row">
+      <div>
+        <div class="trust-num">6+</div>
+        <div class="trust-label">Years in Operations</div>
+      </div>
+      <div>
+        <div class="trust-num">U.S.</div>
+        <div class="trust-label">Based &amp; Available</div>
+      </div>
+      <div>
+        <div class="trust-num">BS</div>
+        <div class="trust-label">Accounting, Cum Laude</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <p class="hero-right-label">Everything falling through the cracks — handled.</p>
+    <div class="svc-list">
+      <div class="svc-row">Email Management <span class="arr">→</span></div>
+      <div class="svc-row">Scheduling &amp; Calendar <span class="arr">→</span></div>
+      <div class="svc-row">Customer Follow-Up &amp; Calls <span class="arr">→</span></div>
+      <div class="svc-row">Invoice &amp; Receipt Tracking <span class="arr">→</span></div>
+      <div class="svc-row">Data Entry &amp; Spreadsheets <span class="arr">→</span></div>
+      <div class="svc-row">Documentation &amp; SOPs <span class="arr">→</span></div>
+      <div class="svc-row">General Admin Organization <span class="arr">→</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="about">
+  <div>
+    <div class="about-label">Why Backbone Operations</div>
+    <p class="about-headline">I don't just do admin — I've <em>lived inside</em> the industries I serve.</p>
+  </div>
+  <div class="about-divider"></div>
+  <div>
+    <p class="about-body">With <strong>6+ years in transportation operations and claims</strong> at a major trucking company, I understand the exact paperwork, phone calls, and coordination chaos that service businesses deal with daily. I've processed 100+ weekly transactions, managed 50+ daily emails, and kept operations running on deadline. Now I bring that same precision to your business.</p>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-inner">
+    <div class="sec-top">
+      <div>
+        <div class="sec-label">What I Handle</div>
+        <h2>Your complete<br><em>back office</em></h2>
+      </div>
+      <p class="sec-desc">Every task pulling you away from your actual work — the calls, the paperwork, the tracking, the follow-up — taken completely off your plate.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card"><div class="svc-ico">📬</div><div class="svc-title">Email Management</div><div class="svc-desc">Inbox sorted, prioritized, and responded to. You only see what needs your attention.</div></div>
+      <div class="svc-card"><div class="svc-ico">📅</div><div class="svc-title">Scheduling &amp; Calendar</div><div class="svc-desc">Appointments booked, reminders sent, conflicts caught before they become problems.</div></div>
+      <div class="svc-card"><div class="svc-ico">📞</div><div class="svc-title">Phone &amp; Follow-Up</div><div class="svc-desc">Customer callbacks, vendor calls, and follow-ups handled so no lead goes cold.</div></div>
+      <div class="svc-card"><div class="svc-ico">🧾</div><div class="svc-title">Invoice &amp; Receipt Tracking</div><div class="svc-desc">Receipts logged, invoices organized, records clean for tax time.</div></div>
+      <div class="svc-card"><div class="svc-ico">📊</div><div class="svc-title">Spreadsheets &amp; Data Entry</div><div class="svc-desc">Client lists, job logs, and records built and actually kept up to date.</div></div>
+      <div class="svc-card"><div class="svc-ico">📋</div><div class="svc-title">Documentation &amp; SOPs</div><div class="svc-desc">Your processes written down so your business doesn't live in your head alone.</div></div>
+      <div class="svc-card"><div class="svc-ico">🤝</div><div class="svc-title">Customer Follow-Up</div><div class="svc-desc">Review requests, check-ins, and client communication on a consistent schedule.</div></div>
+      <div class="svc-card"><div class="svc-ico">🗂️</div><div class="svc-title">Admin Organization</div><div class="svc-desc">Files structured, folders cleaned up, and systems that actually stick.</div></div>
+      <div class="svc-card"><div class="svc-ico">⚡</div><div class="svc-title">General Ops Support</div><div class="svc-desc">Whatever's falling through the cracks — if it's admin, I've got it covered.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section id="who">
+  <div class="sec-inner">
+    <div class="sec-label">Who I Serve</div>
+    <h2>Built for <em>service businesses</em><br>that never stop moving</h2>
+    <div class="who-grid">
+      <div class="who-card"><div class="who-icon">🚚</div><div class="who-name">Trucking Companies</div><div class="who-detail">Load paperwork, driver scheduling, vendor follow-up, freight docs.</div></div>
+      <div class="who-card"><div class="who-icon">🔧</div><div class="who-name">Repair Companies</div><div class="who-detail">Work order tracking, customer callbacks, parts invoices, scheduling.</div></div>
+      <div class="who-card"><div class="who-icon">🏗️</div><div class="who-name">Contractors</div><div class="who-detail">Bid follow-up, subcontractor coordination, project docs, receipts.</div></div>
+      <div class="who-card"><div class="who-icon">🧹</div><div class="who-name">Cleaning Companies</div><div class="who-detail">Client scheduling, team coordination, billing, review requests.</div></div>
+      <div class="who-card"><div class="who-icon">✂️</div><div class="who-name">Salons &amp; Spas</div><div class="who-detail">Appointments, client follow-up, staff scheduling, supplier invoices.</div></div>
+      <div class="who-card"><div class="who-icon">🧒</div><div class="who-name">Daycares</div><div class="who-detail">Parent communication, enrollment paperwork, compliance, billing.</div></div>
+      <div class="who-card"><div class="who-icon">🏠</div><div class="who-name">Real Estate Agents</div><div class="who-detail">Lead follow-up, listing coordination, client emails, paperwork.</div></div>
+      <div class="who-card"><div class="who-icon">🏥</div><div class="who-name">Small Medical Offices</div><div class="who-detail">Appointment reminders, patient follow-up, admin, data entry.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="sec-inner">
+    <div class="sec-label">Investment</div>
+    <h2>Simple,<br><em>predictable</em> pricing</h2>
+    <div class="price-grid">
+      <div class="plan plan-light">
+        <div class="p-name">Starter</div>
+        <div class="p-price"><sup>$</sup>397<span> / mo</span></div>
+        <div class="p-desc">For solo operators who need the basics covered without the overhead of a hire.</div>
+        <ul class="p-list">
+          <li>Up to 10 hours of support/mo</li>
+          <li>Email management</li>
+          <li>Basic scheduling support</li>
+          <li>Receipt &amp; invoice logging</li>
+          <li>Weekly check-in</li>
+        </ul>
+        <a href="#contact" class="btn">Get Started</a>
+      </div>
+      <div class="plan featured">
+        <div class="p-tag">Most Popular</div>
+        <div class="p-name">Operations</div>
+        <div class="p-price"><sup>$</sup>797<span> / mo</span></div>
+        <div class="p-desc">For growing businesses that need consistent, reliable back-office coverage every week.</div>
+        <ul class="p-list">
+          <li>Up to 25 hours of support/mo</li>
+          <li>Full email &amp; inbox management</li>
+          <li>Scheduling &amp; calendar ownership</li>
+          <li>Customer follow-up &amp; callbacks</li>
+          <li>Spreadsheet &amp; data management</li>
+          <li>Invoice &amp; receipt tracking</li>
+          <li>Documentation support</li>
+          <li>Bi-weekly check-in</li>
+        </ul>
+        <a href="#contact" class="btn">Get Started</a>
+      </div>
+      <div class="plan plan-light">
+        <div class="p-name">Full Support</div>
+        <div class="p-price"><sup>$</sup>1,297<span> / mo</span></div>
+        <div class="p-desc">For businesses ready to fully hand off the back office and focus on growth.</div>
+        <ul class="p-list">
+          <li>Up to 45 hours of support/mo</li>
+          <li>Everything in Operations</li>
+          <li>SOP creation &amp; documentation</li>
+          <li>Full phone &amp; call handling</li>
+          <li>Priority response time</li>
+          <li>Monthly reporting &amp; review</li>
+          <li>Team member onboarding</li>
+        </ul>
+        <a href="#contact" class="btn">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDING OFFER -->
+<section id="offer">
+  <div class="sec-inner">
+    <div class="offer-wrap">
+      <div>
+        <div class="sec-label">Limited Launch Offer</div>
+        <h2>Now accepting<br><em>founding clients</em></h2>
+        <p class="offer-desc">I'm currently accepting a small number of founding clients at a special introductory rate. You get professional, U.S.-based back-office support — and direct access to me from day one.</p>
+        <ul class="offer-list">
+          <li>Discounted first month — rate locked in as long as you stay</li>
+          <li>Direct access to me, not a team or call center</li>
+          <li>Custom scope built around your specific needs</li>
+          <li>No long-term contract required to get started</li>
+        </ul>
+        <a href="#contact" class="btn" style="margin-top:1.5rem;display:inline-block">Claim Your Spot</a>
+      </div>
+      <div>
+        <div class="offer-card">
+          <div class="badge-label">Founding Client Spots</div>
+          <div class="badge-main">Now Open</div>
+          <div class="badge-sub">Limited availability</div>
+          <div class="badge-note">Apply today · No obligation</div>
+        </div>
+        <div class="offer-note">
+          <div class="offer-note-ico">✦</div>
+          <p>Founding clients receive priority scheduling and a rate that never increases as long as we work together.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="sec-label">Ready to get your time back?</div>
+    <h2>Let's talk about<br><em>your</em> business</h2>
+    <p>Book a free 20-minute call. We'll figure out exactly what's slowing you down and whether I'm the right fit to fix it — no pressure, no obligation.</p>
+    <a href="mailto:tiffany@backbone-operations.com" class="btn">Book My Free Call</a>
+    <div class="contact-links">
+      <a href="mailto:tiffany@backbone-operations.com" class="c-link">📧 tiffany@backbone-operations.com</a>
+      <a href="tel:+16019375231" class="c-link">📞 (601) 937-5231</a>
+      <a href="#" class="c-link">📅 Schedule Online</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="f-logo">Backbone <span>Operations</span></span>
+  <span class="f-copy">© 2025 Backbone Operations · Pearl, MS · Virtual Admin &amp; Ops Support</span>
+</footer>
+
+</body>
+</html>
